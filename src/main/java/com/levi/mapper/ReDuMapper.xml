@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.mapper.ReDuMapper">
+    <!--添加用户购买的商品-->
+    <insert id="insert" parameterType="_int">
+        insert into repository_du value(#{d_id},#{u_id})
+    </insert>
+
+    <!--查询一个-->
+    <select id="findReDu" resultType="ReDu">
+        select * from repository_du where du_u_id=#{du_u_id} and du_d_id=#{du_d_id}
+    </select>
+</mapper>

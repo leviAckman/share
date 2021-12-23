@@ -1,0 +1,250 @@
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>资源列表</title>
+</head>
+
+<style>
+	body{
+		background: url("/resource_repository_project_war/picture.jpg")  no-repeat center center;
+		background-size:cover;
+		background-attachment:fixed;
+	}
+
+	table{
+		text-align: center;
+		width: 100%;
+		background-color: rgba(253,211,225,0.5);
+	}
+
+	.red{
+		color:rgb(255,0,0);
+	}
+
+	.box{
+		width:100px;height:100px;
+	}
+
+	.div1{
+		background-color: rgba(253,211,225,0.5);
+	}
+</style>
+
+<body>
+	<h3 id="checkUser"></h3>
+
+	<h2>---- 已购买 ----</h2>
+	<table  border="1" cellspacing="0">
+		<thead>
+		<tr>
+			<th>封面</th>
+			<th>编号</th>
+			<th>名称</th>
+			<th>价格</th>
+			<th>下载</th>
+		</tr>
+		</thead>
+
+		<tbody id="tb1"></tbody>
+	</table>
+
+	<br>
+	<div style="background-color: rgba(253,211,225,0.5);width: 255px">
+			<div style="display: flex; justify-content: center;align-items: center;">
+				<strong>转到 </strong>
+				<input value="1" type="text" id="pageNumBuy" style="width: 40px;background-color: black;color: white">
+				<strong>/ </strong><strong id="countbuy"></strong>
+				<input type="button" value="确定" onclick="getAjax_1()">
+		</div>
+	</div>
+
+	<br> <br>
+
+	<H2>---- 未购买 ----</H2>
+	<table  border="1" cellspacing="0">
+		<thead>
+  			<tr>
+  				<th>封面</th>
+  				<th>编号</th>
+  				<th>名称</th>
+    			<th>价格</th>
+    			<th>下载</th>
+    			<th>购买</th>
+  			</tr>
+		</thead>
+
+		<tbody id="tb2"></tbody>
+	</table>
+	<br>
+	<div style="background-color: rgba(253,211,225,0.5);width: 255px">
+		<div style="display: flex; justify-content: center;align-items: center;">
+			<strong>转到 </strong>
+			<input value="1" type="text" id="pageNum" style="width: 40px;background-color: black;color: white">
+			<strong>/ </strong><strong id="count"></strong>
+			<input type="button" value="确定" onclick="getAjax_2()">
+		</div>
+	</div>
+</body>
+
+<script>
+	var strcookie = document.cookie;
+
+	// 获取指定名称的cookie
+	function getCookie(name){
+		var strcookie = document.cookie;//获取cookie字符串
+		var arrcookie = strcookie.split("; ");//分割
+		//遍历匹配
+		for ( var i = 0; i < arrcookie.length; i++) {
+			var arr = arrcookie[i].split("=");
+			if (arr[0] == name){
+				return arr[1];
+			}
+		}
+		return "";
+	}
+
+	function findBalance(){
+		if(strcookie == null || strcookie == ""){
+			document.getElementById("checkUser").innerHTML = "- - - - <a href=\"/resource_repository_project_war/page/login\" class=\"red\">登陆</a> - - - - <a href=\"/resource_repository_project_war/page/register\" class=\"red\">注册</a> - - - -";
+			/*window.location.href="/resource_repository_project_war/page/list";*/
+		}else{
+			document.getElementById("checkUser").innerHTML = "<a href='/resource_repository_project_war/user/signout'> [退出] </a>- - - - 用户： <strong id=\"username\" class=\"red\">null</strong> - - - - 余额： <strong id=\"balance\" class=\"red\">null</strong> - - - - <Strong><a class='red' target='_blank' href='/resource_repository_project_war/page/upload\'>文件上传</a></Strong>";
+			document.getElementById("username").innerHTML=getCookie("reUser.u_name");
+			ajax("/resource_repository_project_war/user/balance", "balance",false,false);
+		}
+	}
+</script>
+
+<script>
+
+	function pageNum(url,infoId) {
+		//1.创建XMLHttpRequest对象
+		var xmlHttp;
+		//根据不同版本浏览器，创建不同的对象
+		if (window.XMLHttpRequest) {
+			//非IE
+			xmlHttp = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			//IE
+			xmlHttp = new ActiveXObject("Microsoft.XMLHTTP")
+		}
+		//2.打开连接
+		xmlHttp.open("post",url,true);
+		//3.指定回调函数
+		xmlHttp.onreadystatechange=function(){
+			//3.1 判断状态
+				//3.2 接受返回的内容
+				var jsonStr = xmlHttp.responseText;
+				document.getElementById(infoId).innerHTML=jsonStr;
+			}
+		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+		xmlHttp.send(null);
+		}
+	
+	function  ajax(url,infoId,is,sd) {
+		//1.创建XMLHttpRequest对象
+		var xmlHttp;
+		//根据不同版本浏览器，创建不同的对象
+		if (window.XMLHttpRequest) {
+			//非IE
+			xmlHttp = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			//IE
+			xmlHttp = new ActiveXObject("Microsoft.XMLHTTP")
+		}
+		//2.打开连接
+		xmlHttp.open("post",url,true);
+		//3.指定回调函数
+		xmlHttp.onreadystatechange=function(){
+			//3.1 判断状态
+			if(xmlHttp.readyState==4) {
+				//3.2 接受返回的内容
+				var jsonStr = xmlHttp.responseText;
+				if (is) {
+					var array = JSON.parse(jsonStr);
+					if(sd){
+						info2(array, infoId);
+					}else{
+						info(array, infoId);
+					}
+				}else{
+					document.getElementById(infoId).innerHTML=jsonStr;
+				}
+			}
+		}
+		//4.发送
+		//  xmlHttp.send(null);
+		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+		xmlHttp.send(null);
+	}
+
+	function info2(array,infoId){
+		var html = "";
+		for(var i = 0; i < array.length; i++){
+			//拼串以获得表格的html代码
+			var emp = array[i];
+			var imgSrc="/resource_repository_project_war/"+emp.d_poster+" ";
+			html += "<tr>";
+			html += "<td width='200' height='150'>"+ "<a target='_blank' href="+imgSrc+">"+"<img width='100%' height='100%' src="+imgSrc+"/>"+"</a>"+"</td>";
+			html += "<td>"+emp.d_id+"</td>";
+			html += "<td>"+emp.d_name+"</td>";
+			html += "<td>"+emp.d_price+"</td>";
+			html += "<td>"+"<a target='_blank' href=/resource_repository_project_war/"+emp.d_download+" "+"/>"+"点击下载</a>"+"</td>";
+			html += "<td>"+"<a href=/resource_repository_project_war/data/buy/"+emp.d_id+" "+"/>"+"点击购买</a>"+"</td>";
+			html += "</tr>";
+		}
+		//将信息写入到span中
+		document.getElementById(infoId).innerHTML = html;
+	}
+
+	function info(array,infoId){
+		var html = "";
+		for(var i = 0; i < array.length; i++){
+			//拼串以获得表格的html代码
+			var emp = array[i];
+			var imgSrc="/resource_repository_project_war/"+emp.d_poster+" ";
+			html += "<tr>";
+			html += "<td width='200' height='150'>"+ "<a target='_blank' href="+imgSrc+">"+"<img width='100%' height='100%' src="+imgSrc+"/>"+"</a>"+"</td>";
+			html += "<td>"+emp.d_id+"</td>";
+			html += "<td>"+emp.d_name+"</td>";
+			html += "<td>"+emp.d_price+"</td>";
+			html += "<td>"+"<a target='_blank' href=/resource_repository_project_war/"+emp.d_download+" "+"/>"+"点击下载</a>"+"</td>";
+			html += "</tr>";
+		}
+		//将信息写入到span中
+		document.getElementById(infoId).innerHTML = html;
+	}
+
+	function getAjax_1(){
+		var value = document.getElementById("pageNumBuy").value;
+		ajax("/resource_repository_project_war/data/ajaxbuy/"+value, "tb1",true,false);
+	}
+
+	function getAjax_2(){
+		var value = document.getElementById("pageNum").value;
+		ajax("/resource_repository_project_war/data/ajax/"+value,"tb2",true,true);
+	}
+
+	function getAjax_3(){
+		pageNum("/resource_repository_project_war/data/count","count");
+	}
+
+	function getAjax_4(){
+		pageNum("/resource_repository_project_war/data/countbuy","countbuy");
+	}
+
+	/*未购买*/
+	ajax("/resource_repository_project_war/data/ajax/0","tb2",true,true);
+	/*查询余额*/
+	findBalance();
+	/*已购买*/
+	if(strcookie == null || strcookie == "") {
+
+	}else{
+		ajax("/resource_repository_project_war/data/ajaxbuy/0", "tb1",true,false);
+		getAjax_4();
+	}
+	getAjax_3();
+</script>
+
+</html>

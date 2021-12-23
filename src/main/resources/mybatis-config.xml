@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias type="com.levi.bean.ReUser" alias="ReUser"/>
+        <typeAlias type="com.levi.bean.ReData" alias="ReData"/>
+        <typeAlias type="com.levi.bean.ReDu" alias="ReDu"/>
+    </typeAliases>
+    <!--注册mapper映射-->
+    <mappers>
+        <package name="com.levi.mapper"/>
+    </mappers>
+</configuration>

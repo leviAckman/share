@@ -1,0 +1,46 @@
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+
+<style>
+    body{
+        margin: 0; padding: 0;
+    }
+    #div1{
+        float: left;
+        width: 20%;
+        height: 99%;
+        border: 3px solid rgb(220,20,60);
+    }
+
+    #div2{
+        float: left;
+        background-color: red;
+        width: 79%;
+        height: 100%;
+        background: url("/resource_repository_project_war/picture_1.jpg")  no-repeat center center;
+        background-size:cover;
+        background-attachment:fixed;
+    }
+</style>
+
+<body>
+    <div id="div1">
+        <form action="/resource_repository_project_war/data/upload" enctype="multipart/form-data" method="post">
+            <strng> ---- 文 件 封 面 ---- </strng>
+            <input type="file" name="poster" accept="image/x-png,image/gif,image/jpeg,image/bmp"> <br> <br>
+            <strng> ---- 上 传 文 件 ---- </strng>
+            <input type="file" name="file"> <br> <br>
+            <strng> ---- 填 写 价 格 ---- </strng>
+            <input type="text" name="d_price"> <br> <br>
+            <strng> ---- 填 写 名 称 ---- </strng>
+            <input type="text" name="d_name"> <br> <br>
+            <input type="submit" value="点 击 上 传" style="width: 150px;height: 27px">
+        </form>
+    </div>
+    <div id="div2">
+    </div>
+</body>
+</html>

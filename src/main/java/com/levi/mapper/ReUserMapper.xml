@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.mapper.ReUserMapper">
+    <!--注册一个用户-->
+    <insert id="register" parameterType="ReUser">
+        insert into repository_user value(null,#{u_name},#{u_password},#{u_email},#{u_balance});
+    </insert>
+
+    <!--检查注册用户是否存在-->
+    <select id="checkRegister" resultType="_int" parameterType="ReUser">
+        select count(*) from repository_user
+        where u_name = #{u_name}
+    </select>
+
+    <!--登陆-->
+    <select id="login" resultType="ReUser" parameterType="ReUser">
+        select * from repository_user
+        where u_name = #{u_name} and u_password = #{u_password}
+    </select>
+
+    <!--返回一个用户-->
+    <select id="resultId" resultType="ReUser">
+        select * from repository_user
+        where u_name = #{u_name} and u_password = #{u_password}
+    </select>
+
+    <!--购买-->
+    <update id="buy">
+        update repository_user set u_balance=u_balance-#{d_price} where u_id=#{u_id}
+    </update>
+
+    <!--查询余额-->
+    <select id="resultBalance" resultType="_double">
+        select u_balance from repository_user
+        where u_name = #{u_name} and u_password = #{u_password}
+    </select>
+</mapper>

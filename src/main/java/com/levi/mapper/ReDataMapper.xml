@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.mapper.ReDataMapper">
+    <!--查询全部数据-->
+    <select id="finAll" resultType="ReData">
+        select * from repository_data limit #{pageNum},6
+    </select>
+
+    <!--查询全部数据-->
+    <select id="count" resultType="_int">
+        select count(*) from repository_data
+    </select>
+
+    <!--根据ID查询-->
+    <select id="findById" resultType="ReData">
+        select * from repository_data where d_id=#{d_id}
+    </select>
+
+    <!--添加-->
+   <insert id="insertReData" parameterType="ReData">
+       insert into repository_data value(null,#{d_poster},#{d_name},#{d_price},#{d_download})
+   </insert>
+
+    <!--查询 已购买的-->
+    <select id="findBuy" resultType="ReData">
+        select d.* from repository_data d where d.d_id
+        <if test="controller == 'true'">
+        in(select du_d_id from repository_du where du_u_id = #{u_id}) limit #{pageNum},2
+        </if>
+
+        <if test="controller == 'false'">
+            not in(select du_d_id from repository_du where du_u_id = #{u_id}) limit #{pageNum},3
+        </if>
+    </select>
+
+    <!--查询页码-->
+    <select id="pageCount" resultType="_int">
+        select count(*) from repository_data d where d.d_id
+        <if test="controller == 'true'">
+            in(select du_d_id from repository_du where du_u_id = #{u_id})
+        </if>
+
+        <if test="controller == 'false'">
+            not in(select du_d_id from repository_du where du_u_id = #{u_id})
+        </if>
+    </select>
+
+    <!--购买-->
+    <insert id="buy" parameterType="_int">
+        insert into repository_du value(#{d_id},#{u_id})
+    </insert>
+</mapper>
